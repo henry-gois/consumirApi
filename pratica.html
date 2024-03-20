@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meme Generator</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        
+    </style>
+</head>
+<body>
+    
+    <div id="form-container">
+        <h2>Gerador de Memes</h2>
+        <select id="meme-options">
+            <option value="meme1">Meme 1</option>
+            <option value="meme2">Meme 2</option>
+            <option value="meme3">Meme 3</option>
+            <option value="meme4">Meme 4</option>
+            <option value="meme5">Meme 5</option>
+        </select>
+        <div id="meme-options-preview"></div>
+        <input type="text" id="top-text" placeholder="Texto em cima">
+        <input type="text" id="bottom-text" placeholder="Texto em baixo">
+        <button id="generate-btn">Gerar Meme</button>
+        <button id="generate-kanye-meme-btn">Gerar Meme com Frase do Kanye West</button>
+        <button id="surprise-btn">Me surpreenda</button>
+
+    </div>
+    <div id="meme-container">
+        <img id="meme-img" src="'https://apimeme.com/meme?meme=Bebo&top=Texto+em+cima&bottom=Texto+em+baixo'" alt="Generated Meme">
+    </div>
+
+    <script>
+        const memeOptions = document.getElementById('meme-options');
+        const memeOptionsPreview = document.getElementById('meme-options-preview');
+        const generateBtn = document.getElementById('generate-btn');
+        const generateKanyeMemeBtn = document.getElementById('generate-kanye-meme-btn');
+        const surpriseBtn = document.getElementById('surprise-btn');
+        const topText = document.getElementById('top-text');
+        const bottomText = document.getElementById('bottom-text');
+        const image = document.getElementById('meme-img');
+    
+        var k = 'c6ef6dc84b464c1abe893f7f7199ecd9'
+
+        surpriseBtn.addEventListener('click', function() {
+            surpriseClick();
+        });
+
+        function surpriseClick(){
+        
+        fetch('https://api.humorapi.com/memes/random/', {
+        headers: {
+            'x-api-key': k
+        }
+        })
+        .then(response => {
+            
+            return response.json();
+        })
+        .then(data => {
+            const imageUrl = data.url;
+            image.src = imageUrl;
+            if(imageUrl.match(/imgur/)){
+                surpriseClick();
+                return;
+            }
+            console.log(imageUrl);
+        })
+            .catch(error => console.log('Erro:', error));
+        }
+
+
+
+        memeOptions.addEventListener('change', function() {
+            const selectedMeme = memeOptions.value;
+            const previewImg = document.createElement('img');
+            previewImg.classList.add('preview-img');
+
+            switch(selectedMeme) {
+                case 'meme1':
+                    previewImg.src = 'https://apimeme.com/meme?meme=Bebo&top=Texto+em+cima&bottom=Texto+em+baixo';
+                    break;
+                case 'meme2':
+                    previewImg.src = 'https://apimeme.com/meme?meme=Buddy-Christ&top=Texto+em+cima&bottom=Texto+em+baixo';
+                    break;
+                case 'meme3':
+                    previewImg.src = 'https://apimeme.com/meme?meme=Gollum&top=Texto+em+cima&bottom=Texto+em+baixo';
+                    break;
+                case 'meme4':
+                    previewImg.src = 'https://apimeme.com/meme?meme=Minegishi-Minami2&top=Texto+em+cima&bottom=Texto+em+baixo';
+                    break;
+                case 'meme5':
+                    previewImg.src = 'https://apimeme.com/meme?meme=Original-Stoner-Dog&top=Texto+em+cima&bottom=Texto+em+baixo';
+                    break;
+            }
+
+            memeOptionsPreview.innerHTML = '';
+            memeOptionsPreview.appendChild(previewImg);
+            previewImg.style.display = 'block'; 
+        });
+
+        generateBtn.addEventListener('click', function() {
+            const selectedMeme = memeOptions.value;
+            const topTextValue = topText.value;
+            const bottomTextValue = bottomText.value;
+            let memeSrc = '';
+
+            switch(selectedMeme) {
+                case 'meme1':
+                    memeSrc = `https://apimeme.com/meme?meme=Bebo&top=${topTextValue}&bottom=${bottomTextValue}`;
+                    break;
+                case 'meme2':
+                    memeSrc = `https://apimeme.com/meme?meme=Buddy-Christ&top=${topTextValue}&bottom=${bottomTextValue}`;
+                    break;
+                case 'meme3':
+                    memeSrc = `https://apimeme.com/meme?meme=Gollum&top=${topTextValue}&bottom=${bottomTextValue}`;
+                    break;
+                case 'meme4':
+                    memeSrc = `https://apimeme.com/meme?meme=Minegishi-Minami2&top=${topTextValue}&bottom=${bottomTextValue}`;
+                    break;
+                case 'meme5':
+                    memeSrc = `https://apimeme.com/meme?meme=Original-Stoner-Dog&top=${topTextValue}&bottom=${bottomTextValue}`;
+                    break;
+            }
+            image.src = memeSrc;
+        });
+
+        generateKanyeMemeBtn.addEventListener('click', function() {
+            kanyeClick();
+        });
+
+        function kanyeClick(){
+        fetch('https://api.kanye.rest/')
+                .then(response => response.json())
+                .then(data => {
+                    let kanyeQuote = data.quote;
+                    // EU SOU UM GÊNIO MLK
+                    console.log('Primeira vez', kanyeQuote)
+                    if (kanyeQuote.length > 100) {
+                        kanyeClick();
+                        return;
+                    }
+                    
+                     const danielHate = ['sex', 'swift', 'f#%k', 'killed', 'kill', 'porn'];
+                     for (let word of danielHate) {
+                     if (kanyeQuote.toLowerCase().includes(word)) {
+                         kanyeClick(); 
+                         return;
+                     }
+                }   
+
+                    const selectedMeme = memeOptions.value;
+                    const topTextValue = kanyeQuote;
+                    const bottomTextValue = "";
+                    let memeSrc = '';
+                    console.log(kanyeQuote)
+
+                    switch(selectedMeme) {
+                        case 'meme1':
+                            memeSrc = `https://apimeme.com/meme?meme=Bebo&top=${topTextValue}&bottom=${bottomTextValue}`;
+                            break;
+                        case 'meme2':
+                            memeSrc = `https://apimeme.com/meme?meme=Buddy-Christ&top=${topTextValue}&bottom=${bottomTextValue}`;
+                            break;
+                        case 'meme3':
+                            memeSrc = `https://apimeme.com/meme?meme=Gollum&top=${topTextValue}&bottom=${bottomTextValue}`;
+                            break;
+                        case 'meme4':
+                            memeSrc = `https://apimeme.com/meme?meme=Minegishi-Minami2&top=${topTextValue}&bottom=${bottomTextValue}`;
+                            break;
+                        case 'meme5':
+                            memeSrc = `https://apimeme.com/meme?meme=Original-Stoner-Dog&top=${topTextValue}&bottom=${bottomTextValue}`;
+                            break;
+                    }
+                    image.src = memeSrc;
+                });
+            };
+    </script>
+</body>
+</html>
